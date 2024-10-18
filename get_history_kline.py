@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     for t in range(start_timestamp,end_timestamp,1000*60):
         the_futures = []
-        for symbol in symbols:
+        """ for symbol in symbols:
             print(symbol)
             res = fetch_symbol_data_parallel_his(symbol,t)
             symbol = res[0]
@@ -58,15 +58,15 @@ if __name__ == "__main__":
                 res_low.loc[low_data.index] = low_data.values
                 res_close.loc[close_data.index] = close_data.values
                 res_volume.loc[volume_data.index] = volume_data.values
-                res_turnover.loc[turnover_data.index] = turnover_data.values
-        """ with futures.ThreadPoolExecutor(max_workers=args.num_workers) as executor:
+                res_turnover.loc[turnover_data.index] = turnover_data.values """
+        with futures.ThreadPoolExecutor(max_workers=args.num_workers) as executor:
             for symbol in symbols:
                 future = executor.submit(fetch_symbol_data_parallel_his,symbol,t)
                 the_futures.append(future)
         for future in futures.as_completed(the_futures):
             res = future.result()
-            symbol = res[-1]
-            data = res[0]
+            symbol = res[0]
+            data = res[1]
             if data:
                 open_data = data[0]
                 high_data = data[1]
@@ -75,11 +75,11 @@ if __name__ == "__main__":
                 volume_data = data[4]
                 turnover_data = data[5]
                 res_open.loc[open_data.index,symbol] = open_data.values
-                res_high.loc[high_data.index] = high_data.values
-                res_low.loc[low_data.index] = low_data.values
-                res_close.loc[close_data.index] = close_data.values
-                res_volume.loc[volume_data.index] = volume_data.values
-                res_turnover.loc[turnover_data.index] = turnover_data.values """
+                res_high.loc[high_data.index,symbol] = high_data.values
+                res_low.loc[low_data.index,symbol] = low_data.values
+                res_close.loc[close_data.index,symbol] = close_data.values
+                res_volume.loc[volume_data.index,symbol] = volume_data.values
+                res_turnover.loc[turnover_data.index,symbol] = turnover_data.values
     res_open.to_pickle('./open_data.pkl')
     res_high.to_pickle('./high_data.pkl')
     res_low.to_pickle('./low_data.pkl')
