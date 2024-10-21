@@ -1,4 +1,5 @@
 import easy_kline
+from utils.get_bybit_data import *
 
 if __name__ == "__main__":
     symbols = get_symbols()
